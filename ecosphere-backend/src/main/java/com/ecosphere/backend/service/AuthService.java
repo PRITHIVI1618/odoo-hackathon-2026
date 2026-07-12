@@ -72,6 +72,7 @@ public class AuthService {
         user.setEmail(registerRequest.getEmail());
         user.setPhone(registerRequest.getPhone());
         user.setEmployeeId(registerRequest.getEmployeeId());
+        user.setGender(registerRequest.getGender() != null ? registerRequest.getGender() : "Other");
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         
         Role role = roleRepository.findByName(registerRequest.getRole())

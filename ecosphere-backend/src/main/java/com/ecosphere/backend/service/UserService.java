@@ -45,6 +45,7 @@ public class UserService {
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setEmployeeId(request.getEmployeeId());
+        user.setGender(request.getGender() != null ? request.getGender() : "Other");
         
         String pwd = request.getPassword() != null && !request.getPassword().isEmpty() ? request.getPassword() : "temp123";
         user.setPassword(passwordEncoder.encode(pwd));
@@ -70,6 +71,7 @@ public class UserService {
         user.setLastName(userDetails.getLastName());
         user.setPhone(userDetails.getPhone());
         user.setStatus(userDetails.getStatus());
+        if(userDetails.getGender() != null) user.setGender(userDetails.getGender());
         
         if (userDetails.getRole() != null && userDetails.getRole().getId() != null) {
             Role role = roleRepository.findById(userDetails.getRole().getId()).orElse(null);

@@ -48,6 +48,8 @@ public class User {
 
     private String avatarUrl;
 
+    private String gender; // Male, Female, Other
+
     private java.time.LocalDateTime lastLogin;
 
     @Column(nullable = false, updatable = false)

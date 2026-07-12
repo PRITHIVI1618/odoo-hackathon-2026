@@ -18,13 +18,15 @@ public class RegisterRequest {
     @NotBlank
     private String lastName;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
     private String phone;
 
     private String employeeId;
+
+    private String gender; // Male, Female, Other
 
     @NotBlank
     private String password;
