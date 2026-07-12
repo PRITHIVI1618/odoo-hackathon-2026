@@ -1,14 +1,18 @@
 package com.ecosphere.backend;
 
 import com.ecosphere.backend.entity.*;
+import com.ecosphere.backend.entity.governance.*;
+import com.ecosphere.backend.entity.gamification.*;
 import com.ecosphere.backend.repository.*;
+import com.ecosphere.backend.repository.governance.*;
+import com.ecosphere.backend.repository.gamification.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -22,12 +26,29 @@ public class DataSeeder implements CommandLineRunner {
     private final TrainingProgramRepository trainingRepository;
     private final EmployeeParticipationRepository participationRepository;
 
+    private final PolicyRepository policyRepository;
+    private final PolicyAcknowledgementRepository policyAckRepository;
+    private final AuditRepository auditRepository;
+    private final ComplianceIssueRepository complianceIssueRepository;
+    private final RiskRepository riskRepository;
+    private final CorrectiveActionRepository correctiveActionRepository;
+
+    private final ChallengeRepository challengeRepository;
+    private final EmployeeChallengeRepository employeeChallengeRepository;
+    private final BadgeRepository badgeRepository;
+    private final EmployeeBadgeRepository employeeBadgeRepository;
+    private final RewardRepository rewardRepository;
+    private final RewardRedemptionRepository rewardRedemptionRepository;
+    private final AchievementTimelineRepository timelineRepository;
+
     @Override
     public void run(String... args) throws Exception {
         seedRoles();
         seedDepartments();
         seedUsers();
         seedSocialData();
+        seedGovernanceData();
+        seedGamificationData();
     }
 
     private void seedRoles() {
@@ -227,6 +248,203 @@ public class DataSeeder implements CommandLineRunner {
             t2.setCompletionPercentage(40.0);
             t2.setStatus("In Progress");
             trainingRepository.save(t2);
+        }
+    }
+
+    private void seedGovernanceData() {
+        if (policyRepository.count() == 0) {
+            Department hrDept = departmentRepository.findByCode("HR").orElseThrow();
+            Department itDept = departmentRepository.findByCode("IT").orElseThrow();
+            User esg = userRepository.findByEmail("esg@ecosphere.com").orElseThrow();
+            User emp1 = userRepository.findByEmail("employee@ecosphere.com").orElseThrow();
+
+            // Policies
+            Policy p1 = new Policy();
+            p1.setTitle("Code of Conduct");
+            p1.setPolicyCode("POL-001");
+            p1.setCategory("Compliance");
+            p1.setVersion("2.1");
+            p1.setDescription("Standard employee code of conduct and ethics.");
+            p1.setEffectiveDate(LocalDate.now().minusYears(1));
+            p1.setReviewDate(LocalDate.now().plusMonths(2));
+            p1.setOwnerDepartment(hrDept);
+            p1.setStatus("Published");
+            policyRepository.save(p1);
+
+            Policy p2 = new Policy();
+            p2.setTitle("Information Security");
+            p2.setPolicyCode("POL-002");
+            p2.setCategory("Security");
+            p2.setVersion("1.0");
+            p2.setDescription("Data protection and IT security guidelines.");
+            p2.setEffectiveDate(LocalDate.now().minusMonths(6));
+            p2.setReviewDate(LocalDate.now().plusMonths(6));
+            p2.setOwnerDepartment(itDept);
+            p2.setStatus("Published");
+            policyRepository.save(p2);
+
+            Policy p3 = new Policy();
+            p3.setTitle("Environmental Policy");
+            p3.setPolicyCode("POL-003");
+            p3.setCategory("ESG");
+            p3.setVersion("1.0");
+            p3.setDescription("Sustainability goals and green office rules.");
+            p3.setEffectiveDate(LocalDate.now().minusDays(10));
+            p3.setReviewDate(LocalDate.now().plusYears(1));
+            p3.setOwnerDepartment(hrDept);
+            p3.setStatus("Under Review");
+            policyRepository.save(p3);
+
+            // Acknowledgements
+            PolicyAcknowledgement ack1 = new PolicyAcknowledgement();
+            ack1.setPolicy(p1);
+            ack1.setEmployee(emp1);
+            ack1.setStatus("Acknowledged");
+            ack1.setAcknowledgedAt(LocalDateTime.now().minusDays(5));
+            policyAckRepository.save(ack1);
+
+            PolicyAcknowledgement ack2 = new PolicyAcknowledgement();
+            ack2.setPolicy(p2);
+            ack2.setEmployee(emp1);
+            ack2.setStatus("Pending");
+            policyAckRepository.save(ack2);
+
+            // Audits
+            Audit a1 = new Audit();
+            a1.setAuditName("Internal ESG Audit");
+            a1.setDepartment(hrDept);
+            a1.setAuditor(esg);
+            a1.setScheduledDate(LocalDate.now().minusMonths(1));
+            a1.setCompletedDate(LocalDate.now().minusDays(15));
+            a1.setScope("Review ESG metrics for Q1");
+            a1.setStatus("Completed");
+            a1.setSummary("Overall good performance, few missing trainings.");
+            auditRepository.save(a1);
+
+            Audit a2 = new Audit();
+            a2.setAuditName("Security Audit");
+            a2.setDepartment(itDept);
+            a2.setAuditor(esg);
+            a2.setScheduledDate(LocalDate.now().plusDays(10));
+            a2.setScope("Check access logs and compliance");
+            a2.setStatus("Planned");
+            auditRepository.save(a2);
+
+            // Issues
+            ComplianceIssue issue1 = new ComplianceIssue();
+            issue1.setAudit(a1);
+            issue1.setDepartment(hrDept);
+            issue1.setTitle("Missing Training");
+            issue1.setDescription("5 employees have not completed diversity training.");
+            issue1.setSeverity("Medium");
+            issue1.setOwner(esg);
+            issue1.setDueDate(LocalDate.now().plusDays(5));
+            issue1.setStatus("Open");
+            complianceIssueRepository.save(issue1);
+
+            ComplianceIssue issue2 = new ComplianceIssue();
+            issue2.setAudit(a1);
+            issue2.setDepartment(hrDept);
+            issue2.setTitle("Late Policy Acknowledgement");
+            issue2.setDescription("InfoSec policy not acknowledged by IT team.");
+            issue2.setSeverity("High");
+            issue2.setOwner(esg);
+            issue2.setDueDate(LocalDate.now().minusDays(2));
+            issue2.setStatus("Investigating");
+            complianceIssueRepository.save(issue2);
+
+            // Risks
+            Risk r1 = new Risk();
+            r1.setRiskCode("RSK-001");
+            r1.setTitle("Cyber Security Breach");
+            r1.setCategory("Security");
+            r1.setLikelihood(2);
+            r1.setImpact(5);
+            r1.setMitigationPlan("Upgrade firewalls and enforce MFA.");
+            r1.setOwner(esg);
+            r1.setStatus("Open");
+            riskRepository.save(r1);
+
+            Risk r2 = new Risk();
+            r2.setRiskCode("RSK-002");
+            r2.setTitle("Supplier Compliance Failure");
+            r2.setCategory("Operational");
+            r2.setLikelihood(3);
+            r2.setImpact(4);
+            r2.setMitigationPlan("Monthly audits of tier 1 suppliers.");
+            r2.setOwner(esg);
+            r2.setStatus("Mitigated");
+            riskRepository.save(r2);
+
+            // Corrective Actions
+            CorrectiveAction ca1 = new CorrectiveAction();
+            ca1.setIssue(issue1);
+            ca1.setActionDescription("Send reminders to employees for training.");
+            ca1.setAssignedTo(esg);
+            ca1.setTargetDate(LocalDate.now().plusDays(2));
+            ca1.setStatus("In Progress");
+            correctiveActionRepository.save(ca1);
+        }
+    }
+
+    private void seedGamificationData() {
+        if (challengeRepository.count() == 0) {
+            User emp1 = userRepository.findByEmail("employee@ecosphere.com").orElseThrow();
+            User admin = userRepository.findByEmail("admin@ecosphere.com").orElseThrow();
+            Department itDept = departmentRepository.findByCode("IT").orElseThrow();
+
+            // Seed Badges
+            Badge b1 = new Badge(null, "Green Champion", "Leaf", "Awarded for completing 5 environmental challenges.", "Complete 5 Env Challenges", "Environmental", LocalDateTime.now());
+            Badge b2 = new Badge(null, "CSR Hero", "Heart", "Awarded for 20 hours of volunteering.", "20 Volunteer Hours", "Social", LocalDateTime.now());
+            Badge b3 = new Badge(null, "Policy Pro", "Shield", "Awarded for acknowledging all policies on time.", "Acknowledge 5 Policies", "Governance", LocalDateTime.now());
+            badgeRepository.save(b1);
+            badgeRepository.save(b2);
+            badgeRepository.save(b3);
+
+            // Seed Rewards
+            Reward r1 = new Reward(null, "Coffee Voucher", "Free coffee at the cafeteria.", 500, 100, "AVAILABLE", LocalDateTime.now());
+            Reward r2 = new Reward(null, "Amazon Gift Card ($50)", "A $50 gift card.", 2000, 10, "AVAILABLE", LocalDateTime.now());
+            Reward r3 = new Reward(null, "Extra Leave Day", "One extra day of paid leave.", 5000, 5, "AVAILABLE", LocalDateTime.now());
+            rewardRepository.save(r1);
+            rewardRepository.save(r2);
+            rewardRepository.save(r3);
+
+            // Seed Challenges
+            Challenge c1 = new Challenge(null, "Plant 10 Trees", "Participate in a tree plantation drive and plant 10 trees.", "Environmental", "CSR_HOURS", 10.0, 300, b1, null, LocalDateTime.now().minusDays(5), LocalDateTime.now().plusDays(25), "ACTIVE", LocalDateTime.now(), LocalDateTime.now());
+            Challenge c2 = new Challenge(null, "Complete Security Training", "Finish the annual infosec training.", "Social", "TRAINING_COMPLETED", 1.0, 150, null, itDept, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(10), "ACTIVE", LocalDateTime.now(), LocalDateTime.now());
+            Challenge c3 = new Challenge(null, "Zero Plastic Week", "Do not use any single-use plastics for a week.", "Environmental", "MANUAL", 1.0, 200, null, null, LocalDateTime.now(), LocalDateTime.now().plusDays(7), "ACTIVE", LocalDateTime.now(), LocalDateTime.now());
+            challengeRepository.save(c1);
+            challengeRepository.save(c2);
+            challengeRepository.save(c3);
+
+            // Seed Employee Challenge Progress
+            EmployeeChallenge ec1 = new EmployeeChallenge(null, emp1, c1, 5.0, false, null, 0, "IN_PROGRESS");
+            EmployeeChallenge ec2 = new EmployeeChallenge(null, emp1, c2, 1.0, true, LocalDateTime.now().minusDays(1), 150, "COMPLETED");
+            employeeChallengeRepository.save(ec1);
+            employeeChallengeRepository.save(ec2);
+
+            // Seed Employee Badges
+            EmployeeBadge eb1 = new EmployeeBadge(null, emp1, b2, LocalDateTime.now().minusDays(10));
+            employeeBadgeRepository.save(eb1);
+
+            // Update user XP manually for seeding
+            emp1.setXp(850);
+            emp1.setLevel(3);
+            userRepository.save(emp1);
+
+            admin.setXp(2500);
+            admin.setLevel(5);
+            userRepository.save(admin);
+
+            // Seed Timeline
+            AchievementTimeline t1 = new AchievementTimeline(null, emp1, "CHALLENGE_COMPLETED", "Completed Security Training", 150, LocalDateTime.now().minusDays(1));
+            AchievementTimeline t2 = new AchievementTimeline(null, emp1, "BADGE_EARNED", "Earned CSR Hero Badge", 0, LocalDateTime.now().minusDays(10));
+            timelineRepository.save(t1);
+            timelineRepository.save(t2);
+
+            // Seed Redemptions
+            RewardRedemption rr1 = new RewardRedemption(null, admin, r1, LocalDateTime.now().minusDays(2), 500, "COMPLETED");
+            rewardRedemptionRepository.save(rr1);
         }
     }
 }

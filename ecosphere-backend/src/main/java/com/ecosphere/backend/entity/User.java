@@ -54,4 +54,10 @@ public class User {
 
     @Column(nullable = false, updatable = false)
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
+
+    @Column(nullable = false)
+    private Integer xp = 0;
+
+    @Column(nullable = false)
+    private Integer level = 1;
 }

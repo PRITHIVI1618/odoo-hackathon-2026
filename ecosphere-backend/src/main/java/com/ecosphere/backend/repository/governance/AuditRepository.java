@@ -1,0 +1,13 @@
+package com.ecosphere.backend.repository.governance;
+
+import com.ecosphere.backend.entity.governance.Audit;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface AuditRepository extends JpaRepository<Audit, Long> {
+    List<Audit> findByDepartmentId(Long departmentId);
+    List<Audit> findByStatus(String status);
+}

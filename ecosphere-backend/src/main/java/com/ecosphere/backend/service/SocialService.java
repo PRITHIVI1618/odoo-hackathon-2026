@@ -24,6 +24,7 @@ public class SocialService {
     private final TrainingProgramRepository trainingRepository;
     private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
+    private final GamificationEngineService gamificationService;
 
     // --- CSR Activities CRUD ---
     public List<CSRActivity> getAllCsrActivities() {
@@ -63,13 +64,24 @@ public class SocialService {
 
     public EmployeeParticipation updateParticipation(Long id, EmployeeParticipation data) {
         EmployeeParticipation participation = participationRepository.findById(id).orElseThrow(() -> new RuntimeException("Participation not found"));
+        
+        boolean wasApproved = "APPROVED".equals(participation.getApprovalStatus());
+        boolean isNowApproved = "APPROVED".equals(data.getApprovalStatus());
+        
         participation.setEmployee(data.getEmployee());
         participation.setCsrActivity(data.getCsrActivity());
         participation.setParticipationDate(data.getParticipationDate());
         participation.setHoursContributed(data.getHoursContributed());
         participation.setApprovalStatus(data.getApprovalStatus());
         participation.setRemarks(data.getRemarks());
-        return participationRepository.save(participation);
+        
+        EmployeeParticipation saved = participationRepository.save(participation);
+        
+        if (!wasApproved && isNowApproved) {
+            gamificationService.awardXp(saved.getEmployee(), (int)(saved.getHoursContributed() * 20), "CSR_ACTIVITY", "Approved CSR Activity: " + saved.getCsrActivity().getTitle());
+        }
+        
+        return saved;
     }
 
     public void deleteParticipation(Long id) {
