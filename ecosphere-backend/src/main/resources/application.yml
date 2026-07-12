@@ -38,3 +38,7 @@ ai:
       url: https://api.openweathermap.org/data/2.5/weather
     default:
       location: Coimbatore,IN
+
+logging:
+  file:
+    name: application.log

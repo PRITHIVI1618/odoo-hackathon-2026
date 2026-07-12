@@ -13,7 +13,10 @@ import {
   UsersRound,
   Building2,
   Bot,
-  Leaf
+  Leaf,
+  ActivitySquare,
+  Database,
+  Info
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuthStore } from "@/store/useAuthStore"
@@ -26,11 +29,14 @@ const navItems = [
   { name: "Challenges", href: "/gamification", icon: Trophy, roles: ["Super Admin", "Employee"] },
   { name: "AI Intelligence", href: "/ai-intelligence", icon: Bot, roles: ["Super Admin", "ESG Manager"] },
   { name: "Reports", href: "/reports", icon: FileText, roles: ["Super Admin", "ESG Manager", "Department Head"] },
+  { name: "Activity Logs", href: "/activity-logs", icon: ActivitySquare, roles: ["Super Admin", "ESG Manager"] },
+  { name: "Odoo Integration", href: "/odoo", icon: Database, roles: ["Super Admin"] },
   { name: "Users", href: "/users", icon: UsersRound, roles: ["Super Admin"] },
   { name: "Departments", href: "/departments", icon: Building2, roles: ["Super Admin"] },
   { name: "Notifications", href: "/notifications", icon: Bell, roles: ["Super Admin", "ESG Manager", "Employee"] },
   { name: "Profile", href: "/profile", icon: User, roles: ["Super Admin", "ESG Manager", "Department Head", "Employee"] },
   { name: "Settings", href: "/settings", icon: Settings, roles: ["Super Admin"] },
+  { name: "About Project", href: "/about", icon: Info, roles: ["Super Admin", "ESG Manager", "Department Head", "Employee"] },
 ]
 
 export function Sidebar() {
@@ -48,7 +54,7 @@ export function Sidebar() {
         </div>
         <span className="text-xl font-bold tracking-tight">EcoSphere AI</span>
       </div>
-      <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+      <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
         {filteredNavItems.map((item) => (
           <NavLink
             key={item.href}
@@ -58,7 +64,7 @@ export function Sidebar() {
                 "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
                   ? "bg-primary/10 text-primary shadow-sm"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground hover:translate-x-1"
               )
             }
           >

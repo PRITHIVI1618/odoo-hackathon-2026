@@ -33,6 +33,7 @@ public class User {
     private String employeeId;
 
     @Column(nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private String password;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -60,4 +61,12 @@ public class User {
 
     @Column(nullable = false)
     private Integer level = 1;
+
+    public Integer getXp() {
+        return xp == null ? 0 : xp;
+    }
+
+    public Integer getLevel() {
+        return level == null ? 1 : level;
+    }
 }

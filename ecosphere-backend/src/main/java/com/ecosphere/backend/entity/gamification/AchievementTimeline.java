@@ -23,6 +23,7 @@ public class AchievementTimeline {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private User employee;
 
     @Column(nullable = false)

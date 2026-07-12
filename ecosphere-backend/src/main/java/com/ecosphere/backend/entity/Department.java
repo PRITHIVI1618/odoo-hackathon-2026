@@ -28,6 +28,7 @@ public class Department {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "head_id")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private User head;
 
     @Column(nullable = false)
