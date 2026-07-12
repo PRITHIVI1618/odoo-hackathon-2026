@@ -11,26 +11,34 @@ import {
   Bell,
   User,
   LogOut,
-  Leaf
+  Leaf,
+  UsersRound,
+  Building2
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuthStore } from "@/store/useAuthStore"
 
 const navItems = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Environmental", href: "/environmental", icon: TreePine },
-  { name: "Social", href: "/social", icon: Users },
-  { name: "Governance", href: "/governance", icon: ShieldCheck },
-  { name: "Gamification", href: "/gamification", icon: Trophy },
-  { name: "AI Insights", href: "/ai-insights", icon: Sparkles },
-  { name: "Reports", href: "/reports", icon: FileText },
-  { name: "Notifications", href: "/notifications", icon: Bell },
-  { name: "Profile", href: "/profile", icon: User },
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Dashboard", href: "/", icon: LayoutDashboard, roles: ["Super Admin", "ESG Manager", "Department Head", "Employee"] },
+  { name: "Environmental", href: "/environmental", icon: TreePine, roles: ["Super Admin", "ESG Manager", "Department Head"] },
+  { name: "Social", href: "/social", icon: Users, roles: ["Super Admin", "ESG Manager", "Department Head"] },
+  { name: "Governance", href: "/governance", icon: ShieldCheck, roles: ["Super Admin", "ESG Manager"] },
+  { name: "Challenges", href: "/challenges", icon: Trophy, roles: ["Super Admin", "Employee"] },
+  { name: "AI Insights", href: "/ai-insights", icon: Sparkles, roles: ["Super Admin"] },
+  { name: "Reports", href: "/reports", icon: FileText, roles: ["Super Admin", "ESG Manager", "Department Head"] },
+  { name: "Users", href: "/users", icon: UsersRound, roles: ["Super Admin"] },
+  { name: "Departments", href: "/departments", icon: Building2, roles: ["Super Admin"] },
+  { name: "Notifications", href: "/notifications", icon: Bell, roles: ["Super Admin", "ESG Manager", "Employee"] },
+  { name: "Profile", href: "/profile", icon: User, roles: ["Super Admin", "ESG Manager", "Department Head", "Employee"] },
+  { name: "Settings", href: "/settings", icon: Settings, roles: ["Super Admin"] },
 ]
 
 export function Sidebar() {
-  const logout = useAuthStore((state) => state.logout)
+  const { user, logout } = useAuthStore()
+
+  const filteredNavItems = navItems.filter(item => 
+    !user || item.roles.includes(user.role)
+  )
 
   return (
     <div className="flex h-full w-64 flex-col border-r bg-card shadow-sm">
@@ -41,7 +49,7 @@ export function Sidebar() {
         <span className="text-xl font-bold tracking-tight">EcoSphere AI</span>
       </div>
       <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-        {navItems.map((item) => (
+        {filteredNavItems.map((item) => (
           <NavLink
             key={item.href}
             to={item.href}

@@ -1,7 +1,14 @@
-import { Outlet } from "react-router-dom"
+import { Outlet, Navigate } from "react-router-dom"
 import { ThemeToggle } from "@/components/shared/ThemeToggle"
+import { useAuthStore } from "@/store/useAuthStore"
 
 export function AuthLayout() {
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background relative overflow-hidden">
       {/* Decorative background elements for premium feel */}

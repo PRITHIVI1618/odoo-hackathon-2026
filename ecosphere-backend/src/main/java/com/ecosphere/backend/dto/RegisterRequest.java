@@ -13,12 +13,24 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RegisterRequest {
     @NotBlank
-    private String name;
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
 
     @NotBlank
     @Email
     private String email;
 
+    private String phone;
+
+    private String employeeId;
+
     @NotBlank
     private String password;
+
+    private Long departmentId;
+
+    @NotBlank
+    private String role; // e.g., "Employee", "Department Head"
 }

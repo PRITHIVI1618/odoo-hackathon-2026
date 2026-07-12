@@ -19,14 +19,37 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 
     @Column(nullable = false, unique = true)
     private String email;
 
+    private String phone;
+
+    @Column(unique = true)
+    private String employeeId;
+
     @Column(nullable = false)
     private String password;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "department_id")
+    private Department department;
+
     @Column(nullable = false)
-    private String role; // e.g., ROLE_USER, ROLE_ADMIN
+    private String status = "ACTIVE"; // ACTIVE, INACTIVE
+
+    private String avatarUrl;
+
+    private java.time.LocalDateTime lastLogin;
+
+    @Column(nullable = false, updatable = false)
+    private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
 }

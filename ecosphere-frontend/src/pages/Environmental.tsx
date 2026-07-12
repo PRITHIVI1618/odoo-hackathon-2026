@@ -1,21 +1,37 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { DashboardTab } from "./environmental/DashboardTab"
+import { TransactionsTab } from "./environmental/TransactionsTab"
+import { FactorsTab } from "./environmental/FactorsTab"
+import { GoalsTab } from "./environmental/GoalsTab"
 
 export function Environmental() {
   return (
     <div className="flex-1 space-y-6">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Environmental Metrics</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Environmental Intelligence</h2>
       </div>
-      <Card className="glass shadow-sm">
-        <CardHeader>
-          <CardTitle>Carbon Footprint Analysis</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[400px] flex items-center justify-center text-muted-foreground border-2 border-dashed border-muted rounded-lg">
-            Detailed environmental metrics and graphs will be displayed here.
-          </div>
-        </CardContent>
-      </Card>
+
+      <Tabs defaultValue="dashboard" className="w-full">
+        <TabsList className="mb-4">
+          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="transactions">Carbon Transactions</TabsTrigger>
+          <TabsTrigger value="goals">Sustainability Goals</TabsTrigger>
+          <TabsTrigger value="factors">Emission Factors</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="dashboard" className="m-0">
+          <DashboardTab />
+        </TabsContent>
+        <TabsContent value="transactions" className="m-0">
+          <TransactionsTab />
+        </TabsContent>
+        <TabsContent value="goals" className="m-0">
+          <GoalsTab />
+        </TabsContent>
+        <TabsContent value="factors" className="m-0">
+          <FactorsTab />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
