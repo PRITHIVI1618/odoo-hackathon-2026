@@ -4,7 +4,7 @@ import { CSRActivitiesTab } from "./social/CSRActivitiesTab"
 import { ParticipationTab } from "./social/ParticipationTab"
 import { TrainingTab } from "./social/TrainingTab"
 
-export default function Social() {
+export function Social() {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col space-y-2">
