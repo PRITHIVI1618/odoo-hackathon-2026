@@ -41,11 +41,16 @@ public class DataSeeder implements CommandLineRunner {
     private final RewardRedemptionRepository rewardRedemptionRepository;
     private final AchievementTimelineRepository timelineRepository;
 
+    private final EmissionFactorRepository emissionFactorRepository;
+    private final CarbonTransactionRepository carbonTransactionRepository;
+    private final EnvironmentalGoalRepository environmentalGoalRepository;
+
     @Override
     public void run(String... args) throws Exception {
         seedRoles();
         seedDepartments();
         seedUsers();
+        seedEnvironmentalData();
         seedSocialData();
         seedGovernanceData();
         seedGamificationData();
@@ -445,6 +450,128 @@ public class DataSeeder implements CommandLineRunner {
             // Seed Redemptions
             RewardRedemption rr1 = new RewardRedemption(null, admin, r1, LocalDateTime.now().minusDays(2), 500, "COMPLETED");
             rewardRedemptionRepository.save(rr1);
+        }
+    }
+
+    private void seedEnvironmentalData() {
+        if (emissionFactorRepository.count() == 0) {
+            Department hrDept = departmentRepository.findByCode("HR").orElseThrow();
+            Department itDept = departmentRepository.findByCode("IT").orElseThrow();
+            Department opsDept = departmentRepository.findByCode("OPS").orElseThrow();
+            Department finDept = departmentRepository.findByCode("FIN").orElseThrow();
+            User esg = userRepository.findByEmail("esg@ecosphere.com").orElseThrow();
+
+            // Emission Factors (use setters since no all-args constructor exists)
+            EmissionFactor efElectricity = new EmissionFactor();
+            efElectricity.setName("Electricity (Grid)");
+            efElectricity.setCategory("Scope 2");
+            efElectricity.setUnit("kWh");
+            efElectricity.setEmissionFactor(0.45);
+            efElectricity.setSource("EPA 2024");
+            efElectricity.setStatus("ACTIVE");
+
+            EmissionFactor efFlight = new EmissionFactor();
+            efFlight.setName("Air Travel (Short Haul)");
+            efFlight.setCategory("Scope 3");
+            efFlight.setUnit("km");
+            efFlight.setEmissionFactor(0.15);
+            efFlight.setSource("Defra 2024");
+            efFlight.setStatus("ACTIVE");
+
+            EmissionFactor efCommute = new EmissionFactor();
+            efCommute.setName("Employee Commute (Car)");
+            efCommute.setCategory("Scope 3");
+            efCommute.setUnit("km");
+            efCommute.setEmissionFactor(0.19);
+            efCommute.setSource("Defra 2024");
+            efCommute.setStatus("ACTIVE");
+
+            EmissionFactor efWaste = new EmissionFactor();
+            efWaste.setName("Landfill Waste");
+            efWaste.setCategory("Scope 3");
+            efWaste.setUnit("kg");
+            efWaste.setEmissionFactor(0.85);
+            efWaste.setSource("EPA 2024");
+            efWaste.setStatus("ACTIVE");
+            
+            emissionFactorRepository.save(efElectricity);
+            emissionFactorRepository.save(efFlight);
+            emissionFactorRepository.save(efCommute);
+            emissionFactorRepository.save(efWaste);
+
+            // Carbon Transactions (spread over past 6 months to populate charts)
+            for (int i = 0; i < 6; i++) {
+                LocalDate date = LocalDate.now().minusMonths(i).withDayOfMonth(15);
+                
+                // IT Dept - High electricity
+                CarbonTransaction ct1 = new CarbonTransaction();
+                ct1.setDepartment(itDept);
+                ct1.setEmployee(esg);
+                ct1.setEmissionFactor(efElectricity);
+                ct1.setSource("Server Room A Power");
+                ct1.setQuantity(5000.0 + (Math.random() * 1000));
+                ct1.setCalculatedEmission(ct1.getQuantity() * efElectricity.getEmissionFactor());
+                ct1.setDate(date);
+                ct1.setNotes("Monthly server power consumption");
+                carbonTransactionRepository.save(ct1);
+
+                // OPS Dept - High waste & travel
+                CarbonTransaction ct2 = new CarbonTransaction();
+                ct2.setDepartment(opsDept);
+                ct2.setEmployee(esg);
+                ct2.setEmissionFactor(efFlight);
+                ct2.setSource("Quarterly Site Visits");
+                ct2.setQuantity(2500.0 + (Math.random() * 500));
+                ct2.setCalculatedEmission(ct2.getQuantity() * efFlight.getEmissionFactor());
+                ct2.setDate(date);
+                ct2.setNotes("Flights to regional offices");
+                carbonTransactionRepository.save(ct2);
+
+                // HR Dept - Commute and general electricity
+                CarbonTransaction ct3 = new CarbonTransaction();
+                ct3.setDepartment(hrDept);
+                ct3.setEmployee(esg);
+                ct3.setEmissionFactor(efCommute);
+                ct3.setSource("Employee Daily Commute Estimate");
+                ct3.setQuantity(1200.0 + (Math.random() * 300));
+                ct3.setCalculatedEmission(ct3.getQuantity() * efCommute.getEmissionFactor());
+                ct3.setDate(date);
+                ct3.setNotes("Aggregated HR commute data");
+                carbonTransactionRepository.save(ct3);
+            }
+
+            // A couple of transactions for today/yesterday for "Today's Emissions"
+            CarbonTransaction ctToday = new CarbonTransaction();
+            ctToday.setDepartment(finDept);
+            ctToday.setEmployee(esg);
+            ctToday.setEmissionFactor(efWaste);
+            ctToday.setSource("Office Paper Waste Disposal");
+            ctToday.setQuantity(150.0);
+            ctToday.setCalculatedEmission(150.0 * efWaste.getEmissionFactor());
+            ctToday.setDate(LocalDate.now());
+            ctToday.setNotes("Weekly waste collection");
+            carbonTransactionRepository.save(ctToday);
+
+            // Goals
+            EnvironmentalGoal g1 = new EnvironmentalGoal();
+            g1.setTitle("Reduce Scope 2 Emissions by 15%");
+            g1.setTargetReduction(15.0);
+            g1.setCurrentReduction(4.5);
+            g1.setStartDate(LocalDate.now().minusMonths(3));
+            g1.setEndDate(LocalDate.now().plusMonths(9));
+            g1.setDepartment(itDept);
+            g1.setStatus("ACTIVE");
+            environmentalGoalRepository.save(g1);
+
+            EnvironmentalGoal g2 = new EnvironmentalGoal();
+            g2.setTitle("Zero Waste to Landfill (100% Reduction)");
+            g2.setTargetReduction(100.0);
+            g2.setCurrentReduction(100.0);
+            g2.setStartDate(LocalDate.now().minusYears(1));
+            g2.setEndDate(LocalDate.now().minusDays(5));
+            g2.setDepartment(opsDept);
+            g2.setStatus("ACHIEVED");
+            environmentalGoalRepository.save(g2);
         }
     }
 }

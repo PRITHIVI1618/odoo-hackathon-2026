@@ -10,6 +10,7 @@ import { Social } from "./pages/Social"
 import { Governance } from "./pages/Governance"
 import { Gamification } from "./pages/Gamification"
 import { AiInsights } from "./pages/AiInsights"
+import { AiIntelligence } from "./pages/AiIntelligence"
 import { Reports } from "./pages/Reports"
 import { Settings } from "./pages/Settings"
 import { Profile } from "./pages/Profile"
@@ -39,6 +40,7 @@ function App() {
             <Route path="/governance" element={<Governance />} />
             <Route path="/gamification" element={<Gamification />} />
             <Route path="/ai-insights" element={<AiInsights />} />
+            <Route path="/ai-intelligence" element={<AiIntelligence />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/profile" element={<Profile />} />

@@ -5,15 +5,15 @@ import {
   Users,
   ShieldCheck,
   Trophy,
-  Sparkles,
   FileText,
   Settings,
   Bell,
   User,
   LogOut,
-  Leaf,
   UsersRound,
-  Building2
+  Building2,
+  Bot,
+  Leaf
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuthStore } from "@/store/useAuthStore"
@@ -23,8 +23,8 @@ const navItems = [
   { name: "Environmental", href: "/environmental", icon: TreePine, roles: ["Super Admin", "ESG Manager", "Department Head"] },
   { name: "Social", href: "/social", icon: Users, roles: ["Super Admin", "ESG Manager", "Department Head"] },
   { name: "Governance", href: "/governance", icon: ShieldCheck, roles: ["Super Admin", "ESG Manager"] },
-  { name: "Challenges", href: "/challenges", icon: Trophy, roles: ["Super Admin", "Employee"] },
-  { name: "AI Insights", href: "/ai-insights", icon: Sparkles, roles: ["Super Admin"] },
+  { name: "Challenges", href: "/gamification", icon: Trophy, roles: ["Super Admin", "Employee"] },
+  { name: "AI Intelligence", href: "/ai-intelligence", icon: Bot, roles: ["Super Admin", "ESG Manager"] },
   { name: "Reports", href: "/reports", icon: FileText, roles: ["Super Admin", "ESG Manager", "Department Head"] },
   { name: "Users", href: "/users", icon: UsersRound, roles: ["Super Admin"] },
   { name: "Departments", href: "/departments", icon: Building2, roles: ["Super Admin"] },
