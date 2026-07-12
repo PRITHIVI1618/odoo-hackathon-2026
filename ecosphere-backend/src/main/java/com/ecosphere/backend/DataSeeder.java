@@ -50,17 +50,17 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedUsers() {
-        if (userRepository.count() == 0) {
-            Role adminRole = roleRepository.findByName("Super Admin").orElseThrow();
-            Role esgRole = roleRepository.findByName("ESG Manager").orElseThrow();
-            Role dhRole = roleRepository.findByName("Department Head").orElseThrow();
-            Role empRole = roleRepository.findByName("Employee").orElseThrow();
+        Role adminRole = roleRepository.findByName("Super Admin").orElseThrow();
+        Role esgRole = roleRepository.findByName("ESG Manager").orElseThrow();
+        Role dhRole = roleRepository.findByName("Department Head").orElseThrow();
+        Role empRole = roleRepository.findByName("Employee").orElseThrow();
 
-            Department itDept = departmentRepository.findByCode("IT").orElseThrow();
-            Department hrDept = departmentRepository.findByCode("HR").orElseThrow();
-            Department opsDept = departmentRepository.findByCode("OPS").orElseThrow();
+        Department itDept = departmentRepository.findByCode("IT").orElseThrow();
+        Department hrDept = departmentRepository.findByCode("HR").orElseThrow();
+        Department opsDept = departmentRepository.findByCode("OPS").orElseThrow();
 
-            // Admin
+        // Admin
+        if (userRepository.findByEmail("admin@ecosphere.com").isEmpty()) {
             User admin = new User();
             admin.setFirstName("Alex");
             admin.setLastName("Smith");
@@ -71,8 +71,10 @@ public class DataSeeder implements CommandLineRunner {
             admin.setEmployeeId("EMP-0001");
             admin.setGender("Male");
             userRepository.save(admin);
+        }
 
-            // ESG Manager
+        // ESG Manager
+        if (userRepository.findByEmail("esg@ecosphere.com").isEmpty()) {
             User esg = new User();
             esg.setFirstName("Sarah");
             esg.setLastName("Connor");
@@ -83,8 +85,10 @@ public class DataSeeder implements CommandLineRunner {
             esg.setEmployeeId("EMP-0002");
             esg.setGender("Female");
             userRepository.save(esg);
+        }
 
-            // Department Head
+        // Department Head
+        if (userRepository.findByEmail("head@ecosphere.com").isEmpty()) {
             User dh = new User();
             dh.setFirstName("David");
             dh.setLastName("Tech");
@@ -95,8 +99,10 @@ public class DataSeeder implements CommandLineRunner {
             dh.setEmployeeId("EMP-0003");
             dh.setGender("Male");
             userRepository.save(dh);
+        }
 
-            // Employee 1
+        // Employee 1
+        if (userRepository.findByEmail("employee@ecosphere.com").isEmpty()) {
             User emp1 = new User();
             emp1.setFirstName("John");
             emp1.setLastName("Doe");
@@ -107,8 +113,10 @@ public class DataSeeder implements CommandLineRunner {
             emp1.setEmployeeId("EMP-0004");
             emp1.setGender("Male");
             userRepository.save(emp1);
+        }
 
-            // Employee 2
+        // Employee 2
+        if (userRepository.findByEmail("emily@ecosphere.com").isEmpty()) {
             User emp2 = new User();
             emp2.setFirstName("Emily");
             emp2.setLastName("Davis");
@@ -119,8 +127,10 @@ public class DataSeeder implements CommandLineRunner {
             emp2.setEmployeeId("EMP-0005");
             emp2.setGender("Female");
             userRepository.save(emp2);
+        }
 
-            // Employee 3
+        // Employee 3
+        if (userRepository.findByEmail("taylor@ecosphere.com").isEmpty()) {
             User emp3 = new User();
             emp3.setFirstName("Taylor");
             emp3.setLastName("Morgan");
