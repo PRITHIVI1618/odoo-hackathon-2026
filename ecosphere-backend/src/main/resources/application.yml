@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ecosphere-backend
+  datasource:
+    url: jdbc:mysql://localhost:3306/ecosphere?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: root123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+app:
+  jwt:
+    secret: 926D96C90030DD58429D2751AC1BDBBC926D96C90030DD58429D2751AC1BDBBC
+    expiration-milliseconds: 604800000 # 7 days
